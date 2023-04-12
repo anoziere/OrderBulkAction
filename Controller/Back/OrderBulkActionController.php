@@ -13,12 +13,14 @@
 namespace OrderBulkAction\Controller\Back;
 
 use OrderBulkAction\Form\StatusForm;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Thelia;
 use Thelia\Model\OrderQuery;
 use Thelia\Model\OrderStatusQuery;
 
@@ -46,6 +48,8 @@ class OrderBulkActionController extends BaseAdminController
             if (null === $status) {
                 throw new \InvalidArgumentException('The status you want to set to the order does not exist');
             }
+            /** @var EventDispatcherInterface $eventDispatcher */
+            $eventDispatcher = $this->getContainer()->get('event_dispatcher');
             foreach ($ordersId as $orderId) {
 
                 $order = OrderQuery::create()->findPk($orderId);
@@ -54,10 +58,13 @@ class OrderBulkActionController extends BaseAdminController
                 }
                 $event = new OrderEvent($order);
                 $event->setStatus($statusId);
-
-                $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                if(version_compare(Thelia::THELIA_VERSION, '2.5.0', '<')) {
+                    $eventDispatcher->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                } else {
+                    $eventDispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
+                }
             }
-        } catch (\Exception $e) {
+        } catch (\InvalidArgumentException $e) {
             $params['update_status_error_message'] = $e->getMessage();
         }
 
