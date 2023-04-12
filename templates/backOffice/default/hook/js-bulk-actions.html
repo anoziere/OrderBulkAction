@@ -1,0 +1,15 @@
+<script>
+    $(document).ready(function() {
+        $('.order_bulk_action_select_all').on('click', function() {
+            $('.order_bulk_action_id').prop('checked', $(this).prop('checked'));
+        });
+        $('#order_bulk_action_status_submit').on('click', function(event) {
+            event.preventDefault();
+            let orderIds = $('.order_bulk_action_id:checked').map(function(){
+                return $(this).val();
+            }).get();
+            $('#order_bulk_action_order_ids').val(orderIds);
+            $('#form_order_bulk_action').submit();
+        });
+    });
+</script>

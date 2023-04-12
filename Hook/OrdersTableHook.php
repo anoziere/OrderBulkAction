@@ -19,27 +19,31 @@ class OrdersTableHook extends BaseHook
 {
     public function onOrdersTableHeader(HookRenderEvent $event): void
     {
-        $content = $this->render('header-col-orders.html');
+        $content = $this->render('hook/header-col-orders.html');
         $event->add($content);
     }
 
     public function onOrdersTableRow(HookRenderEvent $event): void
     {
-        $content = $this->render('row-orders.html', [
-            'order_id' => $event->getArgument('order_id'),
-        ]);
-        $event->add($content);
+        if($event->getArgument('location') === 'orders_table_row') {
+            $content = $this->render('hook/row-orders.html', [
+                'order_id' => $event->getArgument('order_id'),
+            ]);
+            $event->add($content);
+        }
     }
 
     public function onOrdersTop(HookRenderEvent $event): void
     {
-        $content = $this->render('top-select-bulk-actions.html');
+        $content = $this->render('hook/top-select-bulk-actions.html');
         $event->add($content);
+
     }
 
     public function onOrdersJs(HookRenderEvent $event): void
     {
-        $content = $this->render('js-bulk-actions.html');
+        $content = $this->render('hook/js-bulk-actions.html');
+
         $event->add($content);
     }
 
@@ -62,6 +66,12 @@ class OrdersTableHook extends BaseHook
                 [
                     'type' => 'back',
                     'method' => 'onOrdersJs',
+                ],
+            ],
+            'orders.top' => [
+                [
+                    'type' => 'back',
+                    'method' => 'onOrdersTop',
                 ],
             ],
         ];
