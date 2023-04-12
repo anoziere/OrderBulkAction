@@ -2,6 +2,7 @@
 
 namespace OrderBulkAction\Form;
 
+use OrderBulkAction\OrderBulkAction;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Thelia\Core\Thelia;
@@ -15,8 +16,7 @@ class StatusForm extends BaseForm
     {
         $status = OrderStatusQuery::create()->find();
 
-        $locale = $this->getRequest()->getSession()->getAdminEditionLang()->getLocale();
-
+        $locale = $this->getRequest()->getSession()->getLang()->getLocale();
         $statusList = [];
         /** @var \Thelia\Model\OrderStatus $statu */
         foreach ($status as $statu) {
@@ -35,7 +35,7 @@ class StatusForm extends BaseForm
             ])
             ->add('order_bulk_action_order_status', ChoiceType::class, [
                 'choices' => $statusList,
-                'label' => $this->translator->trans('Change status for selection:')
+                'label' => $this->translator->trans('Change status for selection', [], OrderBulkAction::DOMAIN_NAME)
             ])
         ;
     }

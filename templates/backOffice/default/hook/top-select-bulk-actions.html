@@ -5,7 +5,7 @@
         <form action="{url path='/admin/module/OrderBulkAction/status'}" id="form_order_bulk_action" method="post">
             {form_hidden_fields form=$form}
             <div class="form-group">
-                <label class="control-label">{intl l="Change status for selection:"}</label>
+                <label class="control-label">{intl l="Change status for selection" d='orderbulkaction.bo.default'}:</label>
                 <div class="input-group">
                     {form_field form=$form field="order_bulk_action_order_status"}
                     <select name="{$name}" class="form-control">

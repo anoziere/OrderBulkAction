@@ -11,6 +11,5 @@
  */
 
 return [
-    'Change status for selection' => 'Changez le statut de la sélection',
-    'Bulk actions' => 'Action en masse',
+    // 'an english string' => 'The displayed english string',
 ];
